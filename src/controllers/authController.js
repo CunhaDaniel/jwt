@@ -72,11 +72,13 @@ router.post('/authenticate', async (req, res) => {
 
   user.password = undefined 
 
+  console.log(user.id, authConfig.secret)
+
   const token = jwt.sign({ id: user.id }, authConfig.secret, {
     expiresIn: 60,
   })
 
-  console.log(token)
+  // console.log(token)
   res.json(token)
 })
 
