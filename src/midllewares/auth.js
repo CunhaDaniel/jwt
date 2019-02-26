@@ -5,9 +5,8 @@ module.exports = (req, res, next) => {
 
   const authHeader = req.headers.authorization
 
-  console.log(req.headers)
+  // console.log(req.headers)
    
-  
   if (!authHeader)
     return res.status(401).send({ error: 'No token provided' })
 

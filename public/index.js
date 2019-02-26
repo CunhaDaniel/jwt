@@ -7,7 +7,7 @@ $('#loginForm').submit(async () => {
         password: password
     }).then(res => {
         console.log(res)
-        window.location.href = `http://localhost:8080/foods.html?=${res.data}`;
+        // window.location.href = `http://localhost:8080/foods.html?=${res.data}`;
     })
         .catch(err => console.log(err))
 })
