@@ -5,9 +5,10 @@ $('#loginForm').submit(async () => {
     await axios.post('http://localhost:3000/auth/authenticate', {
         email: login,
         password: password
-    }).then(res => {
-        console.log(res)
-        // window.location.href = `http://localhost:8080/foods.html?=${res.data}`;
+    }).then(async res => {
+        await localStorage.setItem("token", res.data)
+        // console.log(res)
+        window.location.href = `http://localhost:8080/foods.html`;
     })
         .catch(err => console.log(err))
 })
