@@ -1,10 +1,6 @@
-module.exports = async () => {
-	const mysql = require('mysql');
+const connection = require('./connection')
 
-
-
-	let data = {}
-
-	// console.log(data)
-	
-}
+module.exports = connection.query('select * from usuarios', (err, users, fields) => {
+  if (err) throw (err);
+  return users;
+})

@@ -1,7 +1,8 @@
 const mysql = require('mysql'); // necessary libray 
 
 const pool = mysql.createPool({
-  connectionLimit: 10,
+  connectionLimit: 1000,
+  connectTimeout: 60 * 60 * 1000,
   port: 3306,
   host: 'db4free.net',
   user: 'crazylego',
