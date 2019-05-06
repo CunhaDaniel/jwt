@@ -1,13 +1,13 @@
-const express = require('express');
+const express = require('express')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const mysql = require('mysql2/promise')
+// const mysql = require('mysql2/promise')
 
 const CONN = require('../database/connection')
 const authConfig = require('../config/auth')
-const pool = require('../database/pool_factory')
+// const pool = require('../database/pool_factory')
 
-async function encpryt(password) {
+async function encpryt (password) {
   // console.log(password)
   const hash = await bcrypt.hash(password, 10);
   return hash
@@ -83,7 +83,7 @@ router.post('/register', async (req, res) => {
     user.password = await encpryt(user.password)
 
     const connection = await CONN()
-    await connection.query(`insert into usuarios (email,senha) values ('${user.email}','${user.password}')`).catch(err => console.log(err))
+    await connection.query(`insert into usuarios (email,password) values ('${user.email}','${user.password}')`).catch(err => console.log(err))
 
     res.json(user);
 
@@ -95,17 +95,15 @@ router.post('/register', async (req, res) => {
 
 
 router.post('/authenticate', async (req, res) => {
+  
   const { email, password } = req.body
-
-  // await new Promise(resolve => setTimeout(resolve, 5000));
-  const user = await getUserByEmail(email)
-
-  // console.log(user)
+  
+  const user = await getUserByEmail(email);
 
   if (!user)
-    return res.status(404).send({ error: "User not found" })
+    return res.status(404).send({ error: "User not found" })echo \"Error: no test specified\" && exit 1echo \"Error: no test specified\" && exit 1echo \"Error: no test specified\" && exit 1
 
-  const compare = await bcrypt.compare(password, user.senha).catch(err => console.log(err))
+  const compare = await bcrypt.compare(password, user.password).catch(err => console.log(err))
   if (!compare)
     return res.status(404).send({ error: "Password incorrect" })
 

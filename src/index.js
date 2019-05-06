@@ -12,7 +12,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(connectionMiddleware(pool))
 
-
 require('./controllers/authController')(app);
 require('./controllers/foodsController')(app);
 
