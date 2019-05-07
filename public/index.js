@@ -1,4 +1,5 @@
 $('#loginForm').submit(async () => {
+  event.preventDefault()
   const login = $('#email').val()
   const password = $('#password').val()
 

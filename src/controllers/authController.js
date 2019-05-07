@@ -1,43 +1,26 @@
 const express = require('express')
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-// const mysql = require('mysql2/promise')
-
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const CONN = require('../database/connection')
 const authConfig = require('../config/auth')
-// const pool = require('../database/pool_factory')
 
 async function encpryt (password) {
-  // console.log(password)
-  const hash = await bcrypt.hash(password, 10);
+  const hash = await bcrypt.hash(password, 10)
   return hash
 }
 
-async function checkUsers(email) {
+async function checkUsers (email) {
   const users = await getUser()
   let flag = false
   users.forEach(element => {
-    if (element.email == email) {
+    if (element.email === email) {
       flag = true
     }
-  });
-  return flag;
+  })
+  return flag
 }
 
-async function getUser() {
-
-  // const rows = []
-  // console.log("DELE")
-  // await pool.getConnection(async (err, connection) => {
-  //   await connection.query('select * from usuarios', (err, resp) => {
-  //     if (err) throw err;
-  //     // rows = resp
-  //     console.log(resp)
-  //   })
-
-    // console.log(values)
-  // })
-  // console.log("Dale")
+async function getUser () {
   const connection = await CONN()
 
   const [rows] = await connection.query('select * from usuarios')
@@ -45,36 +28,27 @@ async function getUser() {
   return rows
 }
 
-async function getUserByEmail(email) {
-
+async function getUserByEmail (email) {
   const users = await getUser()
-
   let user = {}
-
   users.forEach(element => {
-    // console.log(element)
-    if (element.email == email) {
+    if (element.email === email) {
       user = element
     }
   })
-
-
   return user
 }
 
-const router = express.Router();
-
-// app.use(poolConnect(pool))
+const router = express.Router()
 
 router.post('/register', async (req, res) => {
-
   const { email } = req.body
 
   try {
-    if (await checkUsers(email))
+    if (await checkUsers(email)) {
       return res.status(400).send({ error: 'User already exists' })
-
-    const { nome, password } = req.body;
+    }
+    const { nome, password } = req.body
     const user = {
       nome: nome,
       email: email,
@@ -83,40 +57,32 @@ router.post('/register', async (req, res) => {
     user.password = await encpryt(user.password)
 
     const connection = await CONN()
-    await connection.query(`insert into usuarios (email,password) values ('${user.email}','${user.password}')`).catch(err => console.log(err))
+    await connection.query(`insert into usuarios (email,password,acess_level) values ('${user.email}','${user.password}',1)`).catch(err => console.log(err))
 
-    res.json(user);
+    res.json(user)
 
   } catch (error) {
     console.log(error)
-    return res.status(400).send({ error: 'Registration failed' });
+    return res.status(400).send({ error: 'Registration failed' })
   }
-});
-
-
+})
 router.post('/authenticate', async (req, res) => {
-  
   const { email, password } = req.body
-  
-  const user = await getUserByEmail(email);
+  const user = await getUserByEmail(email)
 
-  if (!user)
-    return res.status(404).send({ error: "User not found" })echo \"Error: no test specified\" && exit 1echo \"Error: no test specified\" && exit 1echo \"Error: no test specified\" && exit 1
-
+  if (!user) {
+    return res.status(404).send({ error: 'User not found' })
+  }
   const compare = await bcrypt.compare(password, user.password).catch(err => console.log(err))
-  if (!compare)
-    return res.status(404).send({ error: "Password incorrect" })
-
-  // user.password = undefined
-
+  if (!compare) {
+    return res.status(404).send({ error: 'Password incorrect' })
+  }
   const token = jwt.sign({ id: user.id }, authConfig.secret, {
-    expiresIn: 60,
+    expiresIn: 60 * 60
   })
-
-  userResp = user
-  // userResp.password =undefined
-  console.log(token)
-  res.json({ token: token })
+  user.password = ''
+  console.log(user)
+  res.json({ token: token, user: user })
 })
 
-module.exports = app => app.use('/auth', router);
+module.exports = app => app.use('/auth', router)

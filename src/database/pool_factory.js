@@ -1,4 +1,4 @@
-const mysql = require('mysql'); // necessary libray 
+const mysql = require('mysql2')
 
 const pool = mysql.createPool({
   connectionLimit: 1000,
@@ -7,18 +7,19 @@ const pool = mysql.createPool({
   host: 'db4free.net',
   user: 'crazylego',
   password: `9nyvwEfV`,
-  database: 'stenergia'
-});
+  database: 'stenergia',
+  multipleStatements: true
+})
 
-console.log("Pool criado");
-pool.on('release', () => console.log('pool => conexao retornada'));
+console.log('Pool criado')
+pool.on('release', () => console.log('pool => conexao retornada'))
 
 process.on('SIGINT', () =>
   pool.end(err => {
-    if (err) return console.log(err);
+    if (err) return console.log(err)
     console.log('pool => fechado')
     process.exit(0)
   })
 )
 
-module.exports = pool;
+module.exports = pool
